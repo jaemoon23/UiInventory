@@ -30,6 +30,7 @@ public class UiItemInfo : MonoBehaviour
         itemName.text = data.itemData.StringName;
         itemDesciption.text = data.itemData.StringDesc;
         itemType.text = data.itemData.Type.ToString();
+        itemValue.text = data.itemData.Value.ToString();
         itemCost.text = data.itemData.Cost.ToString();
     }
 }
