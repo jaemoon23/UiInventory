@@ -53,7 +53,7 @@ public class UiInvenSlotList : MonoBehaviour
 
     public int maxCount = 30;
 
-    private List<SaveItemData> testItemList = new List<SaveItemData>();
+    private List<SaveItemData> saveItemList = new List<SaveItemData>();
 
     private SortingOptions sorting = SortingOptions.NameAccending;
     private FilteringOptions filtering = FilteringOptions.None;
@@ -64,7 +64,7 @@ public class UiInvenSlotList : MonoBehaviour
         set
         {
             sorting = value;
-            UpdateSlots(testItemList);
+            UpdateSlots(saveItemList);
         }
     }
     public FilteringOptions Filtering 
@@ -73,7 +73,7 @@ public class UiInvenSlotList : MonoBehaviour
         set
         {
             filtering = value;
-            UpdateSlots(testItemList);
+            UpdateSlots(saveItemList);
         }
     }
 
@@ -82,21 +82,17 @@ public class UiInvenSlotList : MonoBehaviour
     public UnityEvent<SaveItemData> onSelectSlot;
     public void Save()
     {
-        var jsonText = JsonConvert.SerializeObject(testItemList);
-        var filePath = Path.Combine(Application.persistentDataPath, "test.json");
-        File.WriteAllText(filePath, jsonText);
+        SaveLoadManager.Data.ItemList = saveItemList;
+        SaveLoadManager.Save();
     }
 
     public void Load()
     {
-        var filePath = Path.Combine(Application.persistentDataPath, "test.json");
-        if (!File.Exists(filePath))
+        if (SaveLoadManager.Load())
         {
-            return;
+            saveItemList = SaveLoadManager.Data.ItemList;
         }
-        var jsonText = File.ReadAllText(filePath);
-        testItemList = JsonConvert.DeserializeObject<List<SaveItemData>>(jsonText);
-        UpdateSlots(testItemList);
+        UpdateSlots(saveItemList);
     }
 
     private void Awake()
@@ -166,8 +162,8 @@ public class UiInvenSlotList : MonoBehaviour
         var itemInstance = new SaveItemData();
         itemInstance.itemData = DataTableManger.ItemTable.GetRandom();
 
-        testItemList.Add(itemInstance);
-        UpdateSlots(testItemList);
+        saveItemList.Add(itemInstance);
+        UpdateSlots(saveItemList);
     }
 
     public void RemoveItem()
@@ -176,8 +172,8 @@ public class UiInvenSlotList : MonoBehaviour
         {
             return;
         }
-        testItemList.Remove(slotList[selectedSlotIndex].ItemData);
-        UpdateSlots(testItemList);
+        saveItemList.Remove(slotList[selectedSlotIndex].ItemData);
+        UpdateSlots(saveItemList);
     }
 
 }

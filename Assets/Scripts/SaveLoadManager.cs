@@ -1,12 +1,13 @@
 using System.IO;
 using Newtonsoft.Json;
 using UnityEngine;
+using SaveDataVC = SaveDataV3;
 
 public class SaveLoadManager
 {
-    public static int SaveDataVersion { get; } = 1;
+    public static int SaveDataVersion { get; } = 3;
 
-    public static SaveDataV1 Data { get; set; }
+    public static SaveDataVC Data { get; set; } = new SaveDataVC();
     private static readonly string[] SaveFileName =
     {
         "SaveAuto.json",
@@ -19,7 +20,7 @@ public class SaveLoadManager
     public static JsonSerializerSettings settings = new JsonSerializerSettings()
     {
         Formatting = Formatting.Indented,
-        TypeNameHandling = TypeNameHandling.Auto,
+        TypeNameHandling = TypeNameHandling.All,
     };
 
     public static bool Save(int slot = 0)
@@ -38,6 +39,10 @@ public class SaveLoadManager
             // 직렬화
             var path = Path.Combine(SaveDirectory, SaveFileName[slot]);
             var json = JsonConvert.SerializeObject(Data, settings);
+
+            // 암호화
+            
+
             File.WriteAllText(path, json);
             return true;
         }
@@ -61,11 +66,18 @@ public class SaveLoadManager
         {
             return false;
         }
+
         try
         {
             var json = File.ReadAllText(path);
-            Data = JsonConvert.DeserializeObject<SaveDataV1>(json, settings);
+            var dataSave = JsonConvert.DeserializeObject<SaveData>(json, settings);
 
+            while (dataSave.Version < SaveDataVersion)
+            {
+                dataSave = dataSave.VersionUp();
+            }
+
+            Data = dataSave as SaveDataVC;
             return true;
         }
         catch
