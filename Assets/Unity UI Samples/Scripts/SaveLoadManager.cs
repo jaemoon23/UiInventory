@@ -21,24 +21,32 @@ public class SaveLoadManager
         Formatting = Formatting.Indented,
         TypeNameHandling = TypeNameHandling.Auto,
     };
-    
+
     public static bool Save(int slot = 0)
     {
         if (Data == null || slot < 0 || slot >= SaveFileName.Length)
         {
             return false;
         }
-        if (!Directory.Exists(SaveDirectory))
+        try
         {
-            Directory.CreateDirectory(SaveDirectory);
+            if (!Directory.Exists(SaveDirectory))
+            {
+                Directory.CreateDirectory(SaveDirectory);
+            }
+
+            // 직렬화
+            var path = Path.Combine(SaveDirectory, SaveFileName[slot]);
+            var json = JsonConvert.SerializeObject(Data, settings);
+            File.WriteAllText(path, json);
+            return true;
         }
-
-        // 직렬화
-        var path = Path.Combine(SaveDirectory, SaveFileName[slot]);
-        var json = JsonConvert.SerializeObject(Data, settings);
-        File.WriteAllText(path, json);
-
-        return true;
+        catch
+        {
+            Debug.LogError("Save 예외 발생");
+            return false;
+        }
+        
     }
 
     public static bool Load(int slot = 0)
@@ -53,10 +61,18 @@ public class SaveLoadManager
         {
             return false;
         }
+        try
+        {
+            var json = File.ReadAllText(path);
+            Data = JsonConvert.DeserializeObject<SaveDataV1>(json, settings);
 
-        var json = File.ReadAllText(path);
-        Data = JsonConvert.DeserializeObject<SaveDataV1>(json, settings);
-
-        return true;
+            return true;
+        }
+        catch
+        {
+            Debug.LogError("Load 예외 발생");
+            return false;
+        }
+       
     }
 }
