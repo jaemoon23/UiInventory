@@ -60,6 +60,27 @@ public class SaveDataV3 : SaveData
     }
     public override SaveData VersionUp()
     {
+        var saveData = new SaveDataV4();
+        saveData.Name = Name;
+        saveData.Gold = Gold;
+        saveData.ItemList = ItemList;
+        return saveData;
+        
+    }
+}
+[Serializable]
+public class SaveDataV4 : SaveData
+{
+    public string Name { get; set; } = string.Empty;
+    public int Gold;
+    public int difficultyIndex = 0;
+    public List<SaveItemData> ItemList = new List<SaveItemData>();
+    public SaveDataV4()
+    {
+        Version = 4;
+    }
+    public override SaveData VersionUp()
+    {
         throw new NotImplementedException();
     }
 }

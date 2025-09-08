@@ -10,6 +10,7 @@ public class StartWindow : GenericWindow
     public Button newGameButton;
     public Button optionButton;
 
+
     protected void Awake()
     {
         // 버튼 클릭 이벤트에 메서드 연결
@@ -24,7 +25,7 @@ public class StartWindow : GenericWindow
         continueButton.gameObject.SetActive(canContinue);
         // 첫 번째 선택된 버튼 설정
         firstSelected = continueButton.gameObject.activeSelf ? continueButton.gameObject : newGameButton.gameObject;
-        
+
         base.Open();
     }
     public void OnClickContinue()
@@ -33,11 +34,11 @@ public class StartWindow : GenericWindow
     }
     public void OnClickNewGame()
     {
-        Debug.Log("OnClickNewGame");
+        manager.Open(Windows.Over);
     }
     public void OnClickOptions()
     {
-        Debug.Log("OnClickOptions");
+         manager.Open(Windows.Difficulty);
     }
 
 }

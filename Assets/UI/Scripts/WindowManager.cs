@@ -7,6 +7,10 @@ public class WindowManager : MonoBehaviour
     public Windows defaultWindow;
     public Windows CurrentWindow { get; private set; }
 
+    private void OnDestroy()
+    {
+        windows[(int)CurrentWindow].Close();
+    }
     private void Start()
     {
         // 모든 윈도우를 비활성화하고 기본 윈도우를 활성화

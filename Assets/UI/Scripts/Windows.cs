@@ -1,4 +1,7 @@
-public enum Windows 
+public enum Windows
 {
     Start,
+    Over,
+    Key,
+    Difficulty,
 }
