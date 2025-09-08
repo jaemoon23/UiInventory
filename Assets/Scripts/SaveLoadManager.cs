@@ -41,7 +41,7 @@ public class SaveLoadManager
             var json = JsonConvert.SerializeObject(Data, settings);
 
             // 암호화
-            
+
 
             File.WriteAllText(path, json);
             return true;
@@ -51,7 +51,6 @@ public class SaveLoadManager
             Debug.LogError("Save 예외 발생");
             return false;
         }
-        
     }
 
     public static bool Load(int slot = 0)
