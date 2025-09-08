@@ -11,7 +11,7 @@ public class DifficultyWindow : GenericWindow
     public override void Open()
     {
         base.Open();
-        SaveLoadManager.Load();
+        
         index = SaveLoadManager.Data.difficultyIndex;
         toggles[index].isOn = true;
     }

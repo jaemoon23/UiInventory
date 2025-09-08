@@ -15,6 +15,9 @@ public class KeyBoardWindow : GenericWindow
     private int maxInputLength = 7;
     private StringBuilder currentInput = new StringBuilder();
 
+    private Coroutine coroutine;
+    private bool ShowCursor = true;
+
     protected void Awake()
     {
         deleteButton.onClick.AddListener(OnClickDelete);
@@ -32,7 +35,19 @@ public class KeyBoardWindow : GenericWindow
     {
         currentInput.Clear();
         Text.text = string.Empty;
+        ShowCursor = true;
+
         base.Open();
+        if (coroutine != null)
+        {
+            StopCoroutine(coroutine);
+        }
+        coroutine = StartCoroutine(BlinkCursor());
+    }
+
+    private void UpdateTextWithCursor()
+    {
+        Text.text = currentInput.ToString() + (ShowCursor ? "_" : "");
     }
 
     private void OnClickKey(string key)
@@ -40,6 +55,7 @@ public class KeyBoardWindow : GenericWindow
         if (currentInput.Length < maxInputLength)
         {
             Text.text = currentInput.Append(key).ToString();
+            UpdateTextWithCursor();
         }
     }
 
@@ -50,15 +66,25 @@ public class KeyBoardWindow : GenericWindow
             return;
         }
         Text.text = currentInput.Remove(currentInput.Length - 1, 1).ToString();
+        UpdateTextWithCursor();
     }
     public void OnClickCancel()
     {
         currentInput.Clear();
+        UpdateTextWithCursor();
     }
     public void OnClickAccept()
     {
         Debug.Log(Text.text);
     }
-  
-   
+
+    public IEnumerator BlinkCursor()
+    {
+        while (true)
+        {   
+            ShowCursor = !ShowCursor;
+            UpdateTextWithCursor();
+            yield return new WaitForSeconds(1f);
+        }
+    }
 }
